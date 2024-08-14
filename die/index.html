@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精神疾病患者死刑政策全球概況</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold mb-8 text-center text-indigo-700">精神疾病患者死刑政策全球概況</h1>
+
+        <div class="mb-12 bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4 text-indigo-600">國家政策表格</h2>
+            <div class="overflow-x-auto">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>國家</th>
+                            <th>對精神疾病患者執行死刑</th>
+                            <th>死刑狀態</th>
+                            <th>補充資料</th>
+                        </tr>
+                    </thead>
+                    <tbody id="countryTableBody">
+                        <!-- 國家數據將通過 JavaScript 動態填充 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mb-12 bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4 text-indigo-600">更新國家資料</h2>
+            <p id="remainingCountriesCount" class="text-red-500 font-bold"></p>
+            <form id="updateForm" class="custom-form space-y-4">
+                <div>
+                    <label for="country">國家</label>
+                    <select id="country" required>
+                        <option value="">選擇國家</option>
+                        <!-- 國家選項將通過 JavaScript 動態填充 -->
+                    </select>
+                </div>
+                <a id="googleSearchLink" href="#" target="_blank" class="text-blue-500 underline">Google 搜尋該國家精神疾病患者死刑政策</a>
+                <div id="statusDiv">
+                    <label for="status">對精神疾病患者執行死刑</label>
+                    <select id="status">
+                        <option value="">請選擇</option>
+                        <option value="是">是</option>
+                        <option value="否">否</option>
+                        <option value="不清楚">不清楚</option>
+
+                    </select>
+                </div>
+                <div>
+                    <label for="deathPenaltyStatus">死刑狀態</label>
+                    <select id="deathPenaltyStatus" required>
+                        <option value="">請選擇</option>
+                        <option value="保留" selected>保留</option>
+                        <option value="廢除">廢除</option>
+                        <option value="實質廢除">實質廢除</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="additionalInfo">補充資料</label>
+                    <textarea id="additionalInfo" placeholder="輸入補充資料"></textarea>
+                </div>
+                <div>
+                    <button type="submit" class="custom-button">提交更新</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="mb-12 bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4 text-indigo-600">全球概況統計</h2>
+            <div class="flex flex-wrap -mx-2">
+                <div class="w-full md:w-1/2 px-2 mb-4">
+                    <div class="chart-container">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 px-2 mb-4">
+                    <div class="chart-container">
+                        <canvas id="deathPenaltyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4 text-indigo-600">全球概況地圖</h2>
+            <div id="worldMap"></div>
+        </div>
+    </div>
+    <script src="data.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>

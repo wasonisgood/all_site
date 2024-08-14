@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>立委辱罵事件追踪器</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #ecf0f1;
+            --text-color: #34495e;
+            --border-color: #bdc3c7;
+            --card-background: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: var(--card-background);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px var(--shadow-color);
+        }
+        h1, h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .step {
+            display: none;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .step.active {
+            display: block;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease, transform 0.1s ease;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .progress-container {
+            width: 100%;
+            background-color: var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            width: 0;
+            height: 10px;
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
+        }
+        #eventList {
+            margin-top: 40px;
+        }
+        .event {
+            background: var(--card-background);
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            transition: transform 0.3s ease;
+        }
+        .event:hover {
+            transform: translateY(-5px);
+        }
+        .event h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .snapshot {
+            max-width: 100%;
+            height: auto;
+            margin-top: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+        .loading {
+            text-align: center;
+            margin-top: 20px;
+            font-style: italic;
+            color: var(--text-color);
+        }
+        .icon-button {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            padding: 5px;
+        }
+        .icon-button:hover {
+            color: var(--secondary-color);
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>立委辱罵事件追踪器</h1>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress"></div>
+        </div>
+
+        <div id="formSteps">
+            <div class="step active" id="step1">
+                <h2>步驟 1: 辱罵事件資訊</h2>
+                <label for="postUrl">貼文連結:</label>
+                <input type="text" id="postUrl" placeholder="請輸入貼文URL">
+                <label for="insultContent">辱罵內容:</label>
+                <textarea id="insultContent" placeholder="請輸入辱罵內容" rows="4"></textarea>
+                <button onclick="nextStep(2)">下一步 <i class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <div class="step" id="step2">
+                <h2>步驟 2: 辱罵者資訊</h2>
+                <label for="insulterUrl">辱罵者個人資料連結:</label>
+                <input type="text" id="insulterUrl" placeholder="請輸入辱罵者個人資料URL">
+                <label for="insulterInfo">辱罵者其他資訊:</label>
+                <textarea id="insulterInfo" placeholder="請輸入辱罵者的其他相關資訊" rows="4"></textarea>
+                <button onclick="prevStep(1)"><i class="fas fa-arrow-left"></i> 上一步</button>
+                <button onclick="nextStep(3)">下一步 <i class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <div class="step" id="step3">
+                <h2>步驟 3: 上傳截圖</h2>
+                <label for="screenshotUpload">上傳辱罵截圖:</label>
+                <input type="file" id="screenshotUpload" accept="image/*">
+                <button onclick="prevStep(2)"><i class="fas fa-arrow-left"></i> 上一步</button>
+                <button onclick="submitEvent()">提交事件 <i class="fas fa-check"></i></button>
+            </div>
+        </div>
+
+        <div id="eventList">
+            <h2>事件總覽</h2>
+            <!-- 事件將在這裡動態添加 -->
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        let currentStep = 1;
+        let events = [];
+
+        // 模擬後端 API
+        const api = {
+            submitEvent: (eventData) => {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        console.log("Event submitted to backend:", eventData);
+                        resolve({ success: true, id: Date.now() });
+                    }, 1000);
+                });
+            },
+            getEvents: () => {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve(events);
+                    }, 500);
+                });
+            },
+            takeSnapshot: (url) => {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        console.log("Snapshot taken for:", url);
+                        resolve(`https://via.placeholder.com/400x300?text=Snapshot+of+${encodeURIComponent(url)}`);
+                    }, 1500);
+                });
+            }
+        };
+
+        function nextStep(step) {
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            document.getElementById(`step${step}`).classList.add('active');
+            currentStep = step;
+            updateProgress();
+        }
+
+        function prevStep(step) {
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            document.getElementById(`step${step}`).classList.add('active');
+            currentStep = step;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = document.getElementById('progress');
+            progress.style.width = `${(currentStep / 3) * 100}%`;
+        }
+
+        async function submitEvent() {
+            const postUrl = document.getElementById('postUrl').value;
+            const insultContent = document.getElementById('insultContent').value;
+            const insulterUrl = document.getElementById('insulterUrl').value;
+            const insulterInfo = document.getElementById('insulterInfo').value;
+            const screenshot = document.getElementById('screenshotUpload').files[0];
+
+            if (postUrl && insultContent && insulterUrl) {
+                const newEvent = {
+                    postUrl,
+                    insultContent,
+                    insulterUrl,
+                    insulterInfo,
+                    screenshot: screenshot ? URL.createObjectURL(screenshot) : null,
+                    timestamp: new Date().toLocaleString()
+                };
+
+                showNotification("正在提交事件...");
+                const result = await api.submitEvent(newEvent);
+                if (result.success) {
+                    newEvent.id = result.id;
+                    events.push(newEvent);
+                    await updateEventList();
+                    clearForm();
+                    showNotification("事件已成功提交！");
+                    nextStep(1);  // 重置到第一步
+                } else {
+                    showNotification("提交失敗，請稍後再試。");
+                }
+            } else {
+                showNotification("請填寫所有必要資訊");
+            }
+        }
+
+        async function updateEventList() {
+            const eventList = document.getElementById('eventList');
+            eventList.innerHTML = '<h2>事件總覽</h2><div class="loading">載入中...</div>';
+            
+            const fetchedEvents = await api.getEvents();
+            eventList.innerHTML = '<h2>事件總覽</h2>';
+            
+            for (const event of fetchedEvents) {
+                const eventElement = document.createElement('div');
+                eventElement.className = 'event';
+                eventElement.innerHTML = `
+                    <h3>事件 #${event.id}</h3>
+                    <p><strong>貼文連結:</strong> <a href="${event.postUrl}" target="_blank">${event.postUrl}</a></p>
+                    <p><strong>辱罵內容:</strong> ${event.insultContent}</p>
+                    <p><strong>辱罵者資料:</strong> <a href="${event.insulterUrl}" target="_blank">${event.insulterUrl}</a></p>
+                    <p><strong>辱罵者其他資訊:</strong> ${event.insulterInfo}</p>
+                    <p><strong>時間:</strong> ${event.timestamp}</p>
+                    ${event.screenshot ? `<img src="${event.screenshot}" alt="上傳的截圖" class="snapshot">` : ''}
+                    <div id="snapshot-${event.id}" class="snapshot-container"></div>
+                    <button class="icon-button" onclick="deleteEvent(${event.id})"><i class="fas fa-trash"></i></button>
+                `;
+                eventList.appendChild(eventElement);
+                takeSnapshot(event.postUrl, event.id);
+                takeSnapshot(event.insulterUrl, event.id);
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('postUrl').value = '';
+            document.getElementById('insultContent').value = '';
+            document.getElementById('insulterUrl').value = '';
+            document.getElementById('insulterInfo').value = '';
+            document.getElementById('screenshotUpload').value = '';
+        }
+
+        async function takeSnapshot(url, eventId) {
+            const snapshotUrl = await api.takeSnapshot(url);
+            const snapshotElement = document.createElement('img');
+            snapshotElement.src = snapshotUrl;
+            snapshotElement.className = 'snapshot';
+            snapshotElement.alt = '網頁快照';
+            document.getElementById(`snapshot-${eventId}`).appendChild(snapshotElement);
+        }
+
+        function deleteEvent(id) {
+            events = events.filter(event => event.id !== id);
+            updateEventList();
+            showNotification("事件已刪除");
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        updateProgress();
+        updateEventList();
+    </script>
+</body>
+</html>
