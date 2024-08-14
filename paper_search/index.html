@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>未來文獻庫</title>
+    <style>
+        :root {
+            --bg-color: #0f0f1f;
+            --text-color: #e0e0ff;
+            --accent-color: #00ffff;
+            --card-bg: rgba(30, 30, 50, 0.7);
+            --card-border: rgba(0, 255, 255, 0.3);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', '微軟正黑體', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(45deg, #0f0f1f, #1f1f3f);
+            z-index: -1;
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 130px 80px, #fff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 5s infinite;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 0;
+            background: rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px var(--accent-color);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .literature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .literature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .literature-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+        }
+
+        .literature-title {
+            font-size: 1.4rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .literature-authors, .literature-journal, .literature-details {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .literature-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .literature-links a {
+            text-decoration: none;
+            color: var(--bg-color);
+            background-color: var(--accent-color);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .literature-links a:hover {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+
+        @media (max-width: 768px) {
+            .literature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background">
+        <div class="stars"></div>
+    </div>
+    <header>
+        <h1>未來文獻庫</h1>
+    </header>
+    <main>
+        <div id="literature-grid" class="literature-grid"></div>
+    </main>
+    <script src="data/references.js">
+        
+    </script>
+    <script>
+
+
+        function displayLiterature(data) {
+            const grid = document.getElementById('literature-grid');
+
+            data.forEach(entry => {
+                const card = document.createElement('div');
+                card.className = 'literature-card';
+                
+                card.innerHTML = `
+                    <div class="literature-title">${entry.bib.title}</div>
+                    <div class="literature-authors">${entry.bib.author ? entry.bib.author.join(', ') : '未知作者'}</div>
+                    <div class="literature-journal">${entry.bib.venue || '未知出版物'}</div>
+                    <div class="literature-details">發表年份: ${entry.bib.pub_year || 'N/A'} | 引用次數: ${entry.num_citations || '0'}</div>
+                    <div class="literature-links">
+                        ${entry.pub_url ? `<a href="${entry.pub_url}" target="_blank">原文連結</a>` : ''}
+                        ${entry.eprint_url ? `<a href="${entry.eprint_url}" target="_blank">電子預印本</a>` : ''}
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            displayLiterature(literatureData);
+        });
+    </script>
+</body>
+</html>

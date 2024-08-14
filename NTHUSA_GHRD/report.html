@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校園性別歧視現況調查 - 研究報告</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.json">
+  <!-- PWA 支持的元数据 -->
+   <meta name="theme-color" content="#6A0DAD">
+   <script type="module" src="/sw.js" defer></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap');
+
+        :root {
+            --primary-color: #6A0DAD;
+            --secondary-color: #9B59B6;
+            --accent-color: #FFA07A;
+            --background-color: #F0F3F5;
+            --text-color: #333;
+            --link-color: #3498db;
+            --border-color: #E0E0E0;
+            --highlight-color: #FFA07A;
+            --note-bg-color: #FFF4E5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header h1 {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out;
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            animation: rotate 20s linear infinite;
+            z-index: 0;
+        }
+
+        .nav {
+            background-color: var(--secondary-color);
+            padding: 0.5rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0.25rem;
+            border-radius: 20px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        
+        .nav a:hover, .nav a:focus {
+            background-color: var(--accent-color);
+            transform: scale(1.05);
+            outline: none;
+        }
+    /* 新增的 CSS 部分 */
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    z-index: 2;
+}
+
+.nav-toggle span {
+    background-color: white;
+    height: 3px;
+    margin: 5px 0;
+    width: 25px;
+    transition: all 0.3s ease;
+}
+
+.nav.active .nav-toggle span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.nav.active .nav-toggle span:nth-child(2) {
+    opacity: 0;
+}
+
+.nav.active .nav-toggle span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+@media (max-width: 768px) {
+    .nav {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        position: static;
+        background-color: var(--secondary-color);
+        transition: all 0.3s ease;
+    }
+
+    .nav a {
+        width: 100%;
+        text-align: center;
+        padding: 1rem 0;
+        margin: 0;
+        border-bottom: 1px solid var(--primary-color);
+    }
+
+    .nav.active {
+        display: flex;
+        position: static;
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+
+    .header h1 {
+        font-size: 1.25rem;
+    }
+
+    .header .full-title {
+        display: none;
+    }
+
+    .header .short-title {
+        display: inline;
+    }
+
+    .content {
+        margin-top: 1rem;
+    }
+}
+
+@media (min-width: 769px) {
+    .header .short-title {
+        display: none;
+    }
+}
+
+/* 漢堡選單點擊動畫與配色 */
+.nav-toggle.active span {
+    background-color: var(--accent-color);
+}
+
+
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Noto Serif TC', serif;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-top: 2rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            margin-top: 1.25rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .figure {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .figure img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            animation: fadeIn 2s ease-out;
+        }
+
+        .figure-caption {
+            margin-top: 0.5rem;
+            font-style: italic;
+            color: #666;
+        }
+
+        .footnote {
+            font-size: 0.9rem;
+            color: #666;
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+            padding-top: 1rem;
+        }
+
+        .footnote-ref {
+            vertical-align: super;
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .inline-note {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            background-color: var(--note-bg-color);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            display: inline-block;
+            margin-left: 0.5rem;
+            animation: highlight 1.5s ease-in-out infinite alternate;
+        }
+
+        blockquote {
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f0f0f0;
+            border-left: 4px solid var(--secondary-color);
+            font-style: italic;
+        }
+
+        ul, ol {
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        ul li, ol li {
+            margin-bottom: 0.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+            animation: fadeIn 2s ease-out;
+        }
+
+        table, th, td {
+            border: 1px solid var(--border-color);
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--background-color);
+        }
+
+        tr:hover {
+            background-color: var(--highlight-color);
+            cursor: pointer;
+        }
+
+        .meta-info {
+            font-size: 1rem;
+            color: var(--secondary-color);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .meta-info div {
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes highlight {
+            from { background-color: var(--note-bg-color); }
+            to { background-color: var(--highlight-color); }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.75rem;
+            }
+
+            h3 {
+                font-size: 1.5rem;
+            }
+
+            h4 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>
+            <span class="full-title">清華大學學生會性別與人權部</span>
+            <span class="short-title">性別與人權部</span>
+        </h1>
+    </div>
+    <nav class="nav">
+        <a href="index.html">首頁</a>
+        <a href="about.html">關於我們</a>
+        <a href="all_report.html">研究報告</a>
+        <a href="all_event.html">最新消息</a>
+        <a href="call.html">聯絡我們</a>
+    </nav>
+    <div class="container">
+        <h1>校園性別歧視現況調查</h1>
+        <div class="meta-info">
+            <div>作者：清華大學學生會性別與人權部研究團隊</div>
+            <div>發布日期：2024年7月15日</div>
+        </div>
+
+        <h2>1. 研究背景與目的</h2>
+        <p>本研究旨在深入了解當前校園內存在的性別歧視問題，並提出相應的改善建議。通過全面的調查和分析，我們希望為校園政策制定提供重要參考，促進性別平等環境的建立。</p>
+
+        <h2>2. 研究方法</h2>
+        <h3>2.1 問卷調查</h3>
+        <p>我們設計了一份包含25個問題的線上問卷，涵蓋了學生對校園性別平等現狀的感知、親身經歷以及改善建議等方面。問卷於2024年3月1日至3月31日期間向全校學生發放，共收到有效回覆3,500份。</p>
+
+        <h3>2.2 深度訪談</h3>
+        <p>為了獲得更深入的質性資料，我們選取了20名來自不同學院、年級的學生進行一對一深度訪談。每次訪談持續約60分鐘，探討他們在校園中遇到的性別歧視問題及其影響。</p>
+
+        <h2>3. 研究結果</h2>
+        <h3>3.1 校園性別歧視現況概覽</h3>
+        <p>根據問卷調查結果，有65%的受訪者表示在校園中曾遇到或目睹過不同程度的性別歧視行為。<span class="inline-note">這裡的"不同程度"包括言語騷擾、不平等對待等各種形式。</span></p>
+
+        <div class="figure">
+            <img src="https://via.placeholder.com/600x400" alt="校園性別歧視類型分布圖">
+            <p class="figure-caption">圖1：校園性別歧視類型分布圖</p>
+        </div>
+
+        <p>如圖1所示，言語騷擾（38%）和學業/職場中的不平等對待（27%）是最常見的兩種性別歧視形式。<a href="#footnote1" class="footnote-ref">[1]</a></p>
+
+        <h3>3.2 性別歧視對學生的影響</h3>
+        <p>深度訪談結果顯示，遭受性別歧視的學生普遍表現出以下影響：</p>
+        <ul>
+            <li>學業表現下降</li>
+            <li>自尊心降低</li>
+            <li>社交困難</li>
+            <li>心理壓力增加</li>
+        </ul>
+
+        <blockquote>
+            "每次上課時，我都感覺自己的意見不被重視，只因為我是女生。這讓我漸漸失去了在課堂上發言的信心。" - 匿名，大三女學生
+        </blockquote>
+
+        <h2>4. 討論與建議</h2>
+        <p>基於研究結果，我們提出以下改善建議：</p>
+        <h3>4.1 加強性別平等教育</h3>
+        <p>建議學校在新生入學時即開設強制性的性別平等課程，並定期舉辦相關講座和工作坊。</p>
+
+        <h3>4.2 建立有效的申訴機制</h3>
+        <p>完善現有的申訴管道，確保學生可以安全、匿名地報告性別歧視事件，並得到及時處理。</p>
+
+        <h3>4.3 提供心理支持服務</h3>
+        <p>為遭受性別歧視的學生提供專業的心理諮詢服務，幫助他們克服負面影響。</p>
+
+        <h2>5. 結論</h2>
+        <p>本研究揭示了校園性別歧視問題的嚴重性和複雜性。我們呼籲學校管理層、教職員工以及全體學生共同努力，創造一個真正平等、包容的校園環境。</p>
+
+        <div class="footnote">
+            <p id="footnote1">[1] 數據來源：2024年校園性別歧視現況調查問卷，樣本數=3,500。</p>
+        </div>
+    </div>
+    <footer class="footer">
+        © 2024 清華大學學生會性別與人權部 版權所有
+    </footer>
+    <script>
+    // 新增的 JavaScript 部分
+        document.addEventListener('DOMContentLoaded', () => {
+            const nav = document.querySelector('.nav');
+            const navToggle = document.createElement('div');
+            navToggle.classList.add('nav-toggle');
+            navToggle.innerHTML = '<span></span><span></span><span></span>';
+            document.body.appendChild(navToggle);
+        
+            navToggle.addEventListener('click', () => {
+                nav.classList.toggle('active');
+                navToggle.classList.toggle('active');
+        
+        
+            });
+        });</script>
+</body>
+</html>

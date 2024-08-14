@@ -1,0 +1,22 @@
+{
+    "name": "清華大學學生會性別與人權部",
+    "short_name": "性別與人權",
+    "description": "清華大學學生會性別與人權部官方網站",
+    "start_url": "/index.html",
+    "display": "standalone",
+    "background_color": "#F0F3F5",
+    "theme_color": "#6A0DAD",
+    "icons": [
+      {
+        "src": "/icon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/icon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  

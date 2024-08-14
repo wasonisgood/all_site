@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清華大學不分系系學會</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap');
+
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #00cec9;
+            --accent-color: #fd79a8;
+            --background-color: #dfe6e9;
+            --text-color: #2d3436;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            padding-bottom: 10%;
+        }
+
+        .hero-content {
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            padding: 6rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: var(--background-color);
+            transform: skewY(-3deg);
+        }
+
+        .section h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--primary-color);
+            font-size: 2.5rem;
+        }
+
+        .diagonal-sections .section:nth-child(odd) {
+            background-color: white;
+        }
+
+        .diagonal-sections .section:nth-child(even) {
+            background-color: var(--background-color);
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(108, 92, 231, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card:hover::before {
+            top: -75%;
+            left: -75%;
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .curriculum-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            background-color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 0 0.5rem;
+            border-radius: 5px;
+        }
+
+        .tab.active {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .tab-content > div {
+            display: none;
+        }
+
+        .tab-content > div.active {
+            display: block;
+        }
+
+        .quiz-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .quiz-question {
+            margin-bottom: 1rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .quiz-option {
+            padding: 0.5rem;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .quiz-result {
+            margin-top: 2rem;
+            font-weight: bold;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .member-card {
+            text-align: center;
+        }
+
+        .member-card img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+        }
+
+        #contact {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+            padding-top: 10%;
+        }
+
+        #contact .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+        }
+
+        #contact .card h3 {
+            color: white;
+        }
+
+        footer {
+            background-color: var(--text-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .section h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">清大不分系</div>
+                <div class="nav-links">
+                    <a href="#about">關於我們</a>
+                    <a href="#curriculum">學制介紹</a>
+                    <a href="#quiz">適配性測試</a>
+                    <a href="#members">系學會成員</a>
+                    <a href="#contact">聯絡我們</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>開創你的跨領域未來</h1>
+            <p>在清華大學不分系，打破界限，探索無限可能</p>
+        </div>
+    </section>
+
+    <div class="diagonal-sections">
+        <section id="about" class="section">
+            <div class="container">
+                <h2>關於我們</h2>
+                <p>清華大學不分系成立於xxxx年，致力於培養具有跨領域視野的創新人才。我們提供靈活的課程設計和豐富的學習資源，幫助學生探索自己的興趣和潛力，打造獨特的學習之路。</p>
+            </div>
+        </section>
+
+        <section id="curriculum" class="section">
+            <div class="container">
+                <h2>學制介紹</h2>
+                <div class="curriculum-tabs">
+                    <button class="tab active" data-tab="overview">概覽</button>
+                    <button class="tab" data-tab="customization">客製化課程</button>
+                    <button class="tab" data-tab="specialization">分流方向</button>
+                </div>
+                <div class="tab-content card">
+                    <div id="overview" class="active">
+                        <h3>不分系概覽</h3>
+                        <p>清華大學不分系旨在培養跨領域人才，為學生提供更靈活的學習路徑。我們鼓勵學生根據自己的興趣和職業規劃，自主設計學習內容。</p>
+                    </div>
+                    <div id="customization">
+                        <h3>客製化課程</h3>
+                        <p>在不分系，你可以：</p>
+                        <ul>
+                            <li>自由選擇感興趣的課程</li>
+                            <li>跨院系修讀，打破傳統學科界限</li>
+                            <li>設計個人化的學習計劃</li>
+                            <li>獲得專業導師的一對一指導</li>
+                        </ul>
+                    </div>
+                    <div id="specialization">
+                        <h3>分流方向</h3>
+                        <p>雖然我們鼓勵跨領域學習，但學生也可以根據興趣選擇專攻方向，例如：</p>
+                        <ul>
+                            <li>人工智能與數據科學</li>
+                            <li>生物科技與醫學工程</li>
+                            <li>永續發展與環境科學</li>
+                            <li>創新創業與管理</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="quiz" class="section">
+            <div class="container">
+                <h2>適配性測試</h2>
+                <div class="quiz-container">
+                    <div class="quiz-question">
+                        <p>1. 你更喜歡哪種學習方式？</p>
+                        <div class="quiz-options">
+                            <button class="quiz-option" data-score="1">A. 結構化的課程安排</button>
+                            <button class="quiz-option" data-score="2">B. 自主選擇感興趣的課程</button>
+                        </div>
+                    </div>
+                    <div class="quiz-question" style="display: none;">
+                        <p>2. 你對跨領域學習的態度是？</p>
+                        <div class="quiz-options">
+                            <button class="quiz-option" data-score="2">A. 非常感興趣，希望涉獵多個領域</button>
+                            <button class="quiz-option" data-score="1">B. 更願意專注於單一領域深入學習</button>
+                        </div>
+                    </div>
+                    <div class="quiz-question" style="display: none;">
+                        <p>3. 你希望如何規劃你的學習路徑？</p>
+                        <div class="quiz-options">
+                            <button class="quiz-option" data-score="2">A. 靈活調整，根據興趣和市場需求變化</button>
+                            <button class="quiz-option" data-score="1">B. 遵循預設的課程安排</button>
+                        </div>
+                    </div>
+                    <div class="quiz-result"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="members" class="section">
+            <div class="container">
+                <h2>系學會成員</h2>
+                <div class="card-container">
+                    <div class="card member-card">
+                        <img src="/api/placeholder/120/120" alt="張小明">
+                        <h3>張小明</h3>
+                        <p>會長</p>
+                        <p>跨領域學習：AI + 生物科技</p>
+                    </div>
+                    <div class="card member-card">
+                        <img src="/api/placeholder/120/120" alt="李小華">
+                        <h3>李小華</h3>
+                        <p>副會長</p>
+                        <p>跨領域學習：環境科學 + 公共政策</p>
+                    </div>
+                    <div class="card member-card">
+                        <img src="/api/placeholder/120/120" alt="王大方">
+                        <h3>王大方</h3>
+                        <p>活動長

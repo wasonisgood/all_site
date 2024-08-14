@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清華大學學生會性別與人權部</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+        <!-- Web App Manifest -->
+        <link rel="manifest" href="/manifest.json">
+        <!-- PWA 支持的元数据 -->
+         <meta name="theme-color" content="#6A0DAD">
+         <script type="module" src="/sw.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+        
+        :root {
+            --primary-color: #6A0DAD;
+            --secondary-color: #9B59B6;
+            --accent-color: #FFA07A;
+            --background-color: #F0F3F5;
+            --text-color: #333;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header h1 {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out;
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            animation: rotate 20s linear infinite;
+            z-index: 0;
+        }
+        
+        .nav {
+            background-color: var(--secondary-color);
+            padding: 0.5rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0.25rem;
+            border-radius: 20px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        
+        .nav a:hover, .nav a:focus {
+            background-color: var(--accent-color);
+            transform: scale(1.05);
+            outline: none;
+        }
+/* 新增的 CSS 部分 */
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    z-index: 2;
+}
+
+.nav-toggle span {
+    background-color: white;
+    height: 3px;
+    margin: 5px 0;
+    width: 25px;
+    transition: all 0.3s ease;
+}
+
+.nav.active .nav-toggle span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.nav.active .nav-toggle span:nth-child(2) {
+    opacity: 0;
+}
+
+.nav.active .nav-toggle span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+@media (max-width: 768px) {
+    .nav {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        position: static;
+        background-color: var(--secondary-color);
+        transition: all 0.3s ease;
+    }
+
+    .nav a {
+        width: 100%;
+        text-align: center;
+        padding: 1rem 0;
+        margin: 0;
+        border-bottom: 1px solid var(--primary-color);
+    }
+
+    .nav.active {
+        display: flex;
+        position: static;
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+
+    .header h1 {
+        font-size: 1.25rem;
+    }
+
+    .header .full-title {
+        display: none;
+    }
+
+    .header .short-title {
+        display: inline;
+    }
+
+    .content {
+        margin-top: 1rem;
+    }
+}
+
+@media (min-width: 769px) {
+    .header .short-title {
+        display: none;
+    }
+}
+
+/* 漢堡選單點擊動畫與配色 */
+.nav-toggle.active span {
+    background-color: var(--accent-color);
+}
+
+
+@media (max-width: 768px) {
+    .nav {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        background-color: var(--secondary-color);
+    }
+
+    .nav a {
+        width: 100%;
+        text-align: center;
+        padding: 1rem 0;
+        margin: 0;
+        border-bottom: 1px solid var(--primary-color);
+    }
+
+    .nav.active {
+        display: flex;
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+}
+
+        
+        .content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .intro {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .intro h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.75rem;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .intro p {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .section {
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        
+        .card {
+            flex-basis: calc(50% - 0.5rem);
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+        
+        .card:hover, .card:focus {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            outline: none;
+        }
+        
+        .card h4 {
+            color: var(--secondary-color);
+            margin-top: 0;
+        }
+        
+        .card p {
+            margin-bottom: 0;
+        }
+        
+        .card .icon {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        
+        /* 新增功能樣式 */
+        .search-container {
+            margin: 1rem 0;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .search-container input {
+            padding: 0.5rem;
+            border: 1px solid var(--secondary-color);
+            border-radius: 20px 0 0 20px;
+            width: 60%;
+            max-width: 300px;
+        }
+        
+        .search-container button {
+            padding: 0.5rem 1rem;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .search-container button:hover {
+            background-color: var(--primary-color);
+        }
+
+        /* 訂閱按鈕樣式 */
+        .subscribe-button {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            margin: 1rem 0;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            font-size: 1rem;
+        }
+        
+        .subscribe-button:hover, .subscribe-button:focus {
+            background-color: var(--primary-color);
+            transform: scale(1.05);
+            outline: none;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        #newsletter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        #newsletter-form input {
+            padding: 0.5rem;
+            border: 1px solid var(--secondary-color);
+            border-radius: 5px;
+        }
+        
+        #newsletter-form button {
+            padding: 0.5rem;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #newsletter-form button:hover {
+            background-color: var(--primary-color);
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* RWD優化 */
+        @media (max-width: 768px) {
+            .card {
+                flex-basis: 100%;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav a {
+                width: 80%;
+                text-align: center;
+                margin: 0.25rem 0;
+            }
+            
+            .search-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .search-container input,
+            .search-container button {
+                width: 80%;
+                max-width: none;
+                border-radius: 20px;
+                margin: 0.25rem 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 0.5rem;
+            }
+            
+            .card {
+                padding: 0.75rem;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>
+            <span class="full-title">清華大學學生會性別與人權部</span>
+            <span class="short-title">性別與人權部</span>
+        </h1>
+    </div>
+    <nav class="nav">
+        <a href="index.html">首頁</a>
+        <a href="about.html">關於我們</a>
+        <a href="all_report.html">研究報告</a>
+        <a href="all_event.html">最新消息</a>
+        <a href="call.html">聯絡我們</a>
+    </nav>
+    <div class="content">
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="搜尋...">
+            <button onclick="search()"><i class="fas fa-search"></i></button>
+        </div>
+        
+        <div class="intro">
+            <h2>歡迎來到性別與人權部</h2>
+            <p>我們致力於促進校園內的性別平等和人權意識，透過研究、教育和倡議來創造一個更加包容和公平的學習環境。</p>
+        </div>
+        
+        <div class="section">
+            <h3 class="section-title">最新研究報告</h3>
+            <div class="card-container">
+                <div class="card" onclick="showModal('校園性別歧視現況調查', '深入分析校園內存在的性別歧視問題，提出改善建議。透過問卷調查和深度訪談，我們收集了大量第一手資料，為校園政策制定提供了重要參考。')">
+                    <div class="icon"><i class="fas fa-chart-bar"></i></div>
+                    <h4>校園性別歧視現況調查</h4>
+                    <p>深入分析校園內存在的性別歧視問題，提出改善建議。</p>
+                </div>
+                <div class="card" onclick="showModal('LGBTQ+學生權益報告', '探討LGBTQ+學生在校園中面臨的挑戰，並提出支持措施。本報告涵蓋了從學習環境到心理健康的多個方面，旨在創造一個更包容的校園氛圍。')">
+                    <div class="icon"><i class="fas fa-users"></i></div>
+                    <h4>LGBTQ+學生權益報告</h4>
+                    <p>探討LGBTQ+學生在校園中面臨的挑戰，並提出支持措施。</p>
+                </div>
+                <div class="card" onclick="showModal('校園性騷擾防治機制評估', '全面評估現有的校園性騷擾防治機制，找出可能的漏洞和改進空間。我們提出了一系列建議，以加強預防措施和處理流程。')">
+                    <div class="icon"><i class="fas fa-balance-scale"></i></div>
+                    <h4>校園性騷擾防治機制評估</h4>
+                    <p>全面評估現有的校園性騷擾防治機制，找出可能的漏洞和改進空間。</p>
+                </div>
+                <div class="card" onclick="showModal('性別平等教育推廣成效分析', '評估過去一年內校園性別平等教育活動的影響力。通過前後測問卷和焦點部討論，我們量化了教育推廣的實際效果。')">
+                    <div class="icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <h4>性別平等教育推廣成效分析</h4>
+                    <p>評估過去一年內校園性別平等教育活動的影響力。</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3 class="section-title">近期活動</h3>
+            <div class="card-container">
+                <div class="card" onclick="showModal('性別平等週系列講座', '邀請國內外知名學者和活動家分享最新的性別研究成果和實踐經驗。講座主題包括：職場性別平等、跨性別權益、女性賦權等。')">
+                    <div class="icon"><i class="fas fa-microphone-alt"></i></div>
+                    <h4>性別平等週系列講座</h4>
+                    <p>邀請知名學者和活動家分享最新的性別研究成果和實踐經驗。</p>
+                </div>
+                <div class="card" onclick="showModal('人權電影放映會', '精選多部國際獲獎人權主題電影，每周五晚間在校內放映。放映後將有專家導讀和開放討論，深入探討當代人權議題。')">
+                    <div class="icon"><i class="fas fa-film"></i></div>
+                    <h4>人權電影放映會</h4>
+                    <p>精選國際獲獎人權主題電影，每周五晚間在校內放映。</p>
+                </div>
+                <div class="card" onclick="showModal('校園性騷擾防治工作坊', '為學生和教職員工提供實用的性騷擾辨識和防治技巧。工作坊採用角色扮演和案例分析等互動方式，提高參與者的意識和應對能力。')">
+                    <div class="icon"><i class="fas fa-hands-helping"></i></div>
+                    <h4>校園性騷擾防治工作坊</h4>
+                    <p>提供實用的性騷擾辨識和防治技巧。</p>
+                </div>
+                <div class="card" onclick="showModal('性別與人權主題藝術展', '展出學生和本地藝術家以性別和人權為主題的作品，包括繪畫、攝影、裝置藝術等。透過藝術形式傳達平等和尊重的理念。')">
+                    <div class="icon"><i class="fas fa-paint-brush"></i></div>
+                    <h4>性別與人權主題藝術展</h4>
+                    <p>展出以性別和人權為主題的藝術作品。</p>
+                </div>
+            </div>
+        </div>
+        
+        <button class="subscribe-button" onclick="showNewsletterModal()">訂閱我們的電子報</button>
+    </div>
+    <footer class="footer">
+        © 2024 清華大學學生會性別與人權部 版權所有
+    </footer>
+
+    <!-- 模態框 -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-content"></p>
+        </div>
+    </div>
+
+    <!-- 電子報訂閱模態框 -->
+    <div id="newsletterModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeNewsletterModal()">&times;</span>
+            <h2>訂閱我們的電子報</h2>
+            <form id="newsletter-form" onsubmit="return false;">
+                <input type="email" id="email" placeholder="您的電子郵件地址" required>
+                <button onclick="subscribeNewsletter()">訂閱</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 模擬API回應資料
+        const apiData = {
+            welcomeMessage: "我們致力於促進校園內的性別平等和人權意識，透過研究、教育和倡議來創造一個更加包容和公平的學習環境。",
+            reports: [
+                {
+                    title: "校園性別歧視現況調查",
+                    description: "深入分析校園內存在的性別歧視問題，提出改善建議。透過問卷調查和深度訪談，我們收集了大量第一手資料，為校園政策制定提供了重要參考。",
+                    icon: "fas fa-chart-bar"
+                },
+                {
+                    title: "LGBTQ+學生權益報告",
+                    description: "探討LGBTQ+學生在校園中面臨的挑戰，並提出支持措施。本報告涵蓋了從學習環境到心理健康的多個方面，旨在創造一個更包容的校園氛圍。",
+                    icon: "fas fa-users"
+                },
+                {
+                    title: "校園性騷擾防治機制評估",
+                    description: "全面評估現有的校園性騷擾防治機制，找出可能的漏洞和改進空間。我們提出了一系列建議，以加強預防措施和處理流程。",
+                    icon: "fas fa-balance-scale"
+                },
+                {
+                    title: "性別平等教育推廣成效分析",
+                    description: "評估過去一年內校園性別平等教育活動的影響力。通過前後測問卷和焦點部討論，我們量化了教育推廣的實際效果。",
+                    icon: "fas fa-chalkboard-teacher"
+                }
+            ]
+        };
+
+        function showModal(title, content) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-content').innerText = content;
+            document.getElementById('myModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none';
+        }
+
+        function showNewsletterModal() {
+            document.getElementById('newsletterModal').style.display = 'block';
+        }
+
+        function closeNewsletterModal() {
+            document.getElementById('newsletterModal').style.display = 'none';
+        }
+
+        function subscribeNewsletter() {
+            var email = document.getElementById('email').value;
+            alert('感謝您的訂閱！我們將會寄送電子報到 ' + email);
+            closeNewsletterModal();
+        }
+
+        function search() {
+            var searchTerm = document.getElementById('search-input').value.toLowerCase();
+            var cards = document.getElementsByClassName('card');
+            for (var i = 0; i < cards.length; i++) {
+                var cardText = cards[i].innerText.toLowerCase();
+                if (cardText.includes(searchTerm)) {
+                    cards[i].style.display = '';
+                } else {
+                    cards[i].style.display = 'none';
+                }
+            }
+        }
+
+        // 模擬從API獲取資料並更新網頁內容
+        function loadData() {
+            document.querySelector('.intro p').innerText = apiData.welcomeMessage;
+            const reportsContainer = document.querySelector('.section .card-container');
+            reportsContainer.innerHTML = '';
+            apiData.reports.forEach(report => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.setAttribute('onclick', `showModal('${report.title}', '${report.description}')`);
+                card.innerHTML = `
+                    <div class="icon"><i class="${report.icon}"></i></div>
+                    <h4>${report.title}</h4>
+                    <p>${report.description}</p>
+                `;
+                reportsContainer.appendChild(card);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadData);
+
+        // 關閉模態框當點擊模態框外部
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('myModal')) {
+                closeModal();
+            }
+            if (event.target == document.getElementById('newsletterModal')) {
+                closeNewsletterModal();
+            }
+        }
+        
+// 新增的 JavaScript 部分
+document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.querySelector('.nav');
+    const navToggle = document.createElement('div');
+    navToggle.classList.add('nav-toggle');
+    navToggle.innerHTML = '<span></span><span></span><span></span>';
+    document.body.appendChild(navToggle);
+
+    navToggle.addEventListener('click', () => {
+        nav.classList.toggle('active');
+        navToggle.classList.toggle('active');
+
+
+    });
+});
+
+
+
+
+    </script>
+</body>
+</html>

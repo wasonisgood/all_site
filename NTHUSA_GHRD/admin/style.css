@@ -1,0 +1,267 @@
+/* 全局样式 */
+body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+:root {
+    --primary-color: #6A0DAD;
+    --secondary-color: #9B59B6;
+    --accent-color: #FFA07A;
+    --background-color: #F0F3F5;
+    --text-color: #333;
+    --link-color: #3498db;
+    --border-color: #E0E0E0;
+    --highlight-color: #FFC107;
+}
+
+/* 容器样式 */
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* 标题样式 */
+h1 {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+/* 表单样式 */
+form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+input, textarea, select, button[type="submit"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    transition: border-color 0.3s;
+}
+
+input:focus, textarea:focus, select:focus, button[type="submit"]:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button[type="submit"] {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+button[type="submit"]:hover, button[type="submit"]:focus {
+    background-color: var(--secondary-color);
+    transform: scale(1.05);
+    outline: none;
+}
+
+/* 表格样式 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+}
+
+table th, table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+table th {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+table tr:nth-child(even) {
+    background-color: var(--background-color);
+}
+
+/* 按钮样式 */
+button {
+    padding: 0.5rem 1rem;
+    margin: 0.25rem 0;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+button:hover, button:focus {
+    background-color: var(--accent-color);
+    transform: scale(1.05);
+    outline: none;
+}
+
+/* 登陆页面样式 */
+.login-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.login-container h1 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.login-container label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.login-container input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.login-container button:hover, .login-container button:focus {
+    background-color: var(--secondary-color);
+    transform: scale(1.05);
+}
+
+/* 文件输入样式 */
+.file-input {
+    position: relative;
+    overflow: hidden;
+}
+
+.file-input input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-input .button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--secondary-color);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.file-input .button:hover, .file-input .button:focus {
+    background-color: var(--primary-color);
+    transform: scale(1.05);
+}
+
+/* 后台导航栏样式 */
+.admin-nav {
+    background-color: var(--primary-color);
+    padding: 1rem;
+    text-align: center;
+}
+
+.admin-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.admin-nav li {
+    margin: 0.5rem 0;
+}
+
+.admin-nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.admin-nav a:hover, .admin-nav a:focus {
+    background-color: var(--secondary-color);
+    transform: scale(1.05);
+}
+
+/* 调整媒体查询 */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .login-container {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    input, textarea, select, button[type="submit"] {
+        padding: 0.5rem;
+    }
+
+    .file-input .button {
+        padding: 0.5rem 1rem;
+    }
+
+    .admin-nav ul {
+        flex-direction: column;
+    }
+
+    .admin-nav a {
+        width: 100%;
+        text-align: center;
+    }
+}

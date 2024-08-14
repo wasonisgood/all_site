@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>研究報告 - 清華大學學生會性別與人權部</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+       <!-- Web App Manifest -->
+       <link rel="manifest" href="/manifest.json">
+       <!-- PWA 支持的元数据 -->
+        <meta name="theme-color" content="#6A0DAD">
+        <script type="module" src="/sw.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+        
+        :root {
+            --primary-color: #6A0DAD;
+            --secondary-color: #9B59B6;
+            --accent-color: #FFA07A;
+            --background-color: #F0F3F5;
+            --text-color: #333;
+            --border-color: #E0E0E0;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header h1 {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out;
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            animation: rotate 20s linear infinite;
+            z-index: 0;
+        }
+        
+        .nav {
+            background-color: var(--secondary-color);
+            padding: 0.5rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0.25rem;
+            border-radius: 20px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        
+        .nav a:hover, .nav a:focus {
+            background-color: var(--accent-color);
+            transform: scale(1.05);
+            outline: none;
+        }
+        /* 新增的 CSS 部分 */
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    z-index: 2;
+}
+
+.nav-toggle span {
+    background-color: white;
+    height: 3px;
+    margin: 5px 0;
+    width: 25px;
+    transition: all 0.3s ease;
+}
+
+.nav.active .nav-toggle span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.nav.active .nav-toggle span:nth-child(2) {
+    opacity: 0;
+}
+
+.nav.active .nav-toggle span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+@media (max-width: 768px) {
+    .nav {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        position: static;
+        background-color: var(--secondary-color);
+        transition: all 0.3s ease;
+    }
+
+    .nav a {
+        width: 100%;
+        text-align: center;
+        padding: 1rem 0;
+        margin: 0;
+        border-bottom: 1px solid var(--primary-color);
+    }
+
+    .nav.active {
+        display: flex;
+        position: static;
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+
+    .header h1 {
+        font-size: 1.25rem;
+    }
+
+    .header .full-title {
+        display: none;
+    }
+
+    .header .short-title {
+        display: inline;
+    }
+
+    .content {
+        margin-top: 1rem;
+    }
+}
+
+@media (min-width: 769px) {
+    .header .short-title {
+        display: none;
+    }
+}
+
+/* 漢堡選單點擊動畫與配色 */
+.nav-toggle.active span {
+    background-color: var(--accent-color);
+}
+
+        
+        .content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .report-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 1rem;
+        }
+        
+        .report {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            flex-basis: calc(50% - 0.5rem);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .report:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .report img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .report h4 {
+            color: var(--primary-color);
+            margin-top: 0.5rem;
+        }
+        
+        .report p {
+            margin-bottom: 0;
+            color: var(--text-color);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        .pagination a {
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            border-radius: 5px;
+            text-decoration: none;
+            border: 1px solid var(--primary-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .pagination a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .pagination a.active {
+            background-color: var(--primary-color);
+            color: white;
+            pointer-events: none;
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* RWD優化 */
+        @media (max-width: 768px) {
+            .report {
+                flex-basis: 100%;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav a {
+                width: 80%;
+                text-align: center;
+                margin: 0.25rem 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 0.5rem;
+            }
+            
+            .report {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+    <script>
+        // 模擬報告數據
+        const reports = [
+            { title: "校園性別歧視現況調查", description: "深入分析校園內存在的性別歧視問題，提出改善建議。", image: "https://via.placeholder.com/300x200", link: "report.html" },
+            { title: "LGBTQ+學生權益報告", description: "探討LGBTQ+學生在校園中面臨的挑戰，並提出支持措施。", image: "https://via.placeholder.com/300x200", link: "report.html" },
+            { title: "校園性騷擾防治機制評估", description: "全面評估現有的校園性騷擾防治機制，找出可能的漏洞和改進空間。", image: "https://via.placeholder.com/300x200", link: "report.html" },
+            { title: "性別平等教育推廣成效分析", description: "評估過去一年內校園性別平等教育活動的影響力。", image: "https://via.placeholder.com/300x200", link: "report.html" },
+            { title: "校園多元文化融合報告", description: "探討校園內多元文化融合現況及提出相關建議。", image: "https://via.placeholder.com/300x200", link: "report.html" },
+            { title: "學生心理健康狀況調查", description: "分析學生心理健康狀況並提供改善建議。", image: "https://via.placeholder.com/300x200", link: "report.html" },
+        ];
+
+        let currentPage = 1;
+        const reportsPerPage = 4;
+
+        function displayReports() {
+            const container = document.querySelector('.report-container');
+            container.innerHTML = '';
+            const start = (currentPage - 1) * reportsPerPage;
+            const end = start + reportsPerPage;
+            const paginatedReports = reports.slice(start, end);
+
+            paginatedReports.forEach(report => {
+                const reportElement = document.createElement('div');
+                reportElement.classList.add('report');
+                reportElement.innerHTML = `
+                    <img src="${report.image}" alt="${report.title}">
+                    <h4>${report.title}</h4>
+                    <p>${report.description}</p>
+                `;
+                reportElement.onclick = () => window.location.href = report.link;
+                container.appendChild(reportElement);
+            });
+
+            displayPagination();
+        }
+
+        function displayPagination() {
+            const pagination = document.querySelector('.pagination');
+            pagination.innerHTML = '';
+            const pageCount = Math.ceil(reports.length / reportsPerPage);
+
+            for (let i = 1; i <= pageCount; i++) {
+                const pageLink = document.createElement('a');
+                pageLink.innerText = i;
+                pageLink.href = "#";
+                pageLink.classList.add(currentPage === i ? 'active' : '');
+                pageLink.onclick = (e) => {
+                    e.preventDefault();
+                    currentPage = i;
+                    displayReports();
+                };
+                pagination.appendChild(pageLink);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', displayReports);
+    </script>
+</head>
+<body>
+    <div class="header">
+        <h1>
+            <span class="full-title">清華大學學生會性別與人權部</span>
+            <span class="short-title">性別與人權部</span>
+        </h1>
+    </div>
+    <nav class="nav">
+        <a href="index.html">首頁</a>
+        <a href="about.html">關於我們</a>
+        <a href="all_report.html">研究報告</a>
+        <a href="all_event.html">最新消息</a>
+        <a href="call.html">聯絡我們</a>
+    </nav>
+    <div class="content">
+        <h2 class="section-title">研究報告</h2>
+        <div class="report-container"></div>
+        <div class="pagination"></div>
+    </div>
+    <footer class="footer">
+        © 2024 清華大學學生會性別與人權部 版權所有
+    </footer>
+    <script>
+        // 新增的 JavaScript 部分
+            document.addEventListener('DOMContentLoaded', () => {
+                const nav = document.querySelector('.nav');
+                const navToggle = document.createElement('div');
+                navToggle.classList.add('nav-toggle');
+                navToggle.innerHTML = '<span></span><span></span><span></span>';
+                document.body.appendChild(navToggle);
+            
+                navToggle.addEventListener('click', () => {
+                    nav.classList.toggle('active');
+                    navToggle.classList.toggle('active');
+            
+            
+                });
+            });</script>
+</body>
+</html>
