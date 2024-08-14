@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清華大學學生會性別與人權研究部</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#6A0DAD">
+    <script type="module" src="/sw.js" defer></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+
+:root {
+    --primary-color: #6A0DAD;
+    --secondary-color: #9B59B6;
+    --accent-color: #FFA07A;
+    --background-color: #F7F9FB;
+    --text-color: #333;
+    --light-text-color: #555;
+    --light-bg-color: #FFFFFF;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --border-radius: 12px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 0 15px;
+}
+
+.header {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+}
+
+.header h1 {
+    font-size: 2.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    animation: fadeInUp 1s ease-out;
+}
+
+.header p {
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-top: 0.5rem;
+    animation: fadeInUp 1.5s ease-out;
+}
+
+.nav {
+    background-color: var(--light-bg-color);
+    box-shadow: 0 2px 4px var(--shadow-color);
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+}
+
+.nav a {
+    color: var(--primary-color);
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    margin: 0.25rem;
+    border-radius: 30px;
+    transition: background-color 0.3s, transform 0.3s, color 0.3s;
+    font-weight: 600;
+}
+
+.nav a:hover, .nav a:focus {
+    background-color: var(--primary-color);
+    color: white;
+    transform: scale(1.05);
+    outline: none;
+}
+
+.content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: var(--light-bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 8px var(--shadow-color);
+    animation: fadeIn 1s ease-out;
+}
+
+.intro {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.intro h2 {
+    color: var(--primary-color);
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 1s ease-out;
+}
+
+.intro p {
+    font-size: 1.2rem;
+    color: var(--light-text-color);
+    max-width: 900px;
+    margin: 0 auto;
+    line-height: 1.8;
+    animation: fadeInUp 1s ease-out;
+}
+
+.section {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--accent-color);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.card {
+    flex-basis: calc(50% - 0.75rem);
+    background-color: var(--light-bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 3px 6px var(--shadow-color);
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.card:hover, .card:focus {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px var(--shadow-color);
+    outline: none;
+}
+
+.card h4 {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+}
+
+.card p {
+    margin-bottom: 0;
+    font-size: 1rem;
+    color: var(--light-text-color);
+}
+
+.card .icon {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    margin-bottom: 0.75rem;
+}
+
+.faq {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.faq-item {
+    background-color: var(--light-bg-color);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 4px var(--shadow-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.faq-item h4 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    transition: color 0.3s ease;
+}
+
+.faq-item p {
+    margin: 1rem 0 0 0;
+    color: var(--light-text-color);
+    line-height: 1.5;
+}
+
+.faq-item.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.faq-item.active h4 {
+    color: white;
+}
+
+.faq-item.active p {
+    color: white;
+}
+
+.faq-content {
+    display: none;
+}
+
+.faq-item.active .faq-content {
+    display: block;
+}
+
+.footer {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2.5rem;
+    border-radius: var(--border-radius);
+}
+
+.footer p {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2.25rem;
+    }
+
+    .nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .nav a {
+        width: 100%;
+        text-align: center;
+        padding: 1rem 0;
+        margin: 0.5rem 0;
+        border-bottom: 1px solid var(--primary-color);
+    }
+
+    .content {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .card {
+        flex-basis: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .content {
+        padding: 1rem;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+
+    .footer {
+        padding: 1rem;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>清華大學學生會性別與人權研究部</h1>
+        <p>推動校園內外性別與人權議題的研究與實踐</p>
+        <div class="nav-toggle" id="navToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <nav class="nav" id="navMenu">
+        <a href="#introduction">簡介</a>
+        <a href="#organization">組織運作</a>
+        <a href="#groups">分組介紹</a>
+        <a href="#services">業務介紹</a>
+        <a href="#qa">常見問題</a>
+    </nav>
+
+    <div class="content">
+        <section class="intro" id="introduction">
+            <h2>簡介</h2>
+            <p>在全球化與多元文化的背景下，人權與性別平等已成為各大學校園的重要議題。然而，目前台灣多數大學的人權與性別議題，僅僅被納入學術部門或作為輔助性質的小組進行探討，缺乏專門的部門來系統性地推動相關研究與實踐。因此，成立清華大學學生會「人權及性別研究部」尤為重要，這將使我們的校園在國際人權與性別平等領域中立於前沿，為學生提供更多的學習與參與機會。</p>
+        </section>
+
+        <section class="section" id="organization">
+            <h3 class="section-title">組織運作</h3>
+            <p>本部門將按照以下組織架構運作，以確保每個小組的工作順利進行並達成我們的研究目標。</p>
+            <ul>
+                <li>設立多個專業小組，針對不同的人權與性別議題進行研究。</li>
+                <li>由部長負責統籌各小組的研究進度及成果。</li>
+                <li>各小組定期召開會議，報告進展並交流意見。</li>
+            </ul>
+        </section>
+
+        <section class="section" id="groups">
+            <h3 class="section-title">分組介紹</h3>
+            <div class="card-container">
+                <div class="card">
+                    <h4><span class="icon">&#9733;</span>性別小組</h4>
+                    <p>性別小組主要依據《消除對婦女一切形式歧視公約》（CEDAW）及性別平等教育法來推動校園內的性別平等。這個小組的工作重點在於促進性別平等政策的制定和實施，以及防治性別歧視和性騷擾等問題。</p>
+                </div>
+                <div class="card">
+                    <h4><span class="icon">&#9733;</span>身心障礙及特殊需求小組</h4>
+                    <p>身心障礙及特殊需求小組以《身心障礙者權利公約》（CRPD）及身心障礙者權益保障法為基礎，致力於推動校園的無障礙設施建設及支持系統的完善。</p>
+                </div>
+                <div class="card">
+                    <h4><span class="icon">&#9733;</span>種族及賦權小組</h4>
+                    <p>種族及賦權小組依據《消除一切形式種族歧視國際公約》、《公民政治權利國際公約》以及《原住民族權利宣言》，專注於提升多元文化的理解與包容。</p>
+                </div>
+                <div class="card">
+                    <h4><span class="icon">&#9733;</span>人權意識提升小組</h4>
+                    <p>人權意識提升小組專注於推廣人權教育，以九大核心人權公約為基礎，開發和實施相關教育計劃。</p>
+                </div>
+                <div class="card">
+                    <h4><span class="icon">&#9733;</span>人權開發及數位研究小組</h4>
+                    <p>人權開發及數位研究小組聚焦於九大核心人權公約，旨在利用數位技術來增進人權議題的研究與發展。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="services">
+            <h3 class="section-title">業務介紹</h3>
+            <p>本部門將進行以下業務來達成我們的宗旨與目標。</p>
+            <ul>
+                <li>定期人權、性別評估框架制定與調查。</li>
+                <li>各小組自主研究議題，確保研究持續性和知識積累。</li>
+                <li>接受其他部門委託的研究案，提供專業分析和建議。</li>
+                <li>開發人權應用，進行數位人文研究。</li>
+                <li>法規政策的人權及性別影響評估。</li>
+                <li>與校方合作推動人權及永續教育，開發教學資源和工具。</li>
+                <li>在任期結束時提交總結報告，展現工作成果和未來建議。</li>
+            </ul>
+        </section>
+
+        <section class="section" id="qa">
+            <h3 class="section-title">常見問題</h3>
+            <div class="faq">
+                <div class="faq-item faq-toggle">
+                    <h4>Q1: 成立這個部門是否會影響學生會其他部門的運作？</h4>
+                    <p class="faq-content">本部門的設立旨在補充學生會的工作，而非取代其他部門的功能。</p>
+                </div>
+                <div class="faq-item faq-toggle">
+                    <h4>Q2: 部門的運作是否會耗費過多的學生會資源？</h4>
+                    <p class="faq-content">我們將以高效資源利用為核心，通過尋求外部資助及合作機會來減少對學生會財政的依賴。</p>
+                </div>
+                <div class="faq-item faq-toggle">
+                    <h4>Q3: 部門是否會影響清華大學學生會的聲譽？</h4>
+                    <p class="faq-content">「人權及性別研究部」作為一個研究型部門，其主要職責在於學術研究和政策分析。</p>
+                </div>
+                <div class="faq-item faq-toggle">
+                    <h4>Q4: 為什麼不要直接成立小組，而是成立一個專門的部門？</h4>
+                    <p class="faq-content">成立一個專門的研究部門，可以在組織架構上獲得更好的支持，確保有足夠的資源和人力來推進長期性及系統性的人權與性別研究。</p>
+                </div>
+                <div class="faq-item faq-toggle">
+                    <h4>Q5: 研究部門如何彌補現行學生會功能的不足？</h4>
+                    <p class="faq-content">研究部門能夠透過系統化的研究，提供有關人權及性別平等的深度分析和政策建議，支持學生會在制定長期戰略和政策時有更廣闊的視野和數據支撐。</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 清華大學學生會性別與人權研究部. 版權所有.</p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.faq-toggle').forEach(item => {
+            item.addEventListener('click', () => {
+                item.classList.toggle('active');
+            });
+        });
+
+        document.getElementById('navToggle').addEventListener('click', function() {
+            document.getElementById('navMenu').classList.toggle('active');
+            this.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
