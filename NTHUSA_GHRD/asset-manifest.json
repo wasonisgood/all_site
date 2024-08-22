@@ -1,16 +1,15 @@
 {
   "files": {
-    "main.css": "/nthusa_ghrd/static/css/main.ce650e30.css",
-    "main.js": "/nthusa_ghrd/static/js/main.fc799a3d.js",
+    "main.css": "/nthusa_ghrd/static/css/main.c2926de9.css",
+    "main.js": "/nthusa_ghrd/static/js/main.73cac02d.js",
     "static/js/453.cae056c1.chunk.js": "/nthusa_ghrd/static/js/453.cae056c1.chunk.js",
-    "static/media/logo.png": "/nthusa_ghrd/static/media/logo.f2164b5d46a03e3d685e.png",
     "index.html": "/nthusa_ghrd/index.html",
-    "main.ce650e30.css.map": "/nthusa_ghrd/static/css/main.ce650e30.css.map",
-    "main.fc799a3d.js.map": "/nthusa_ghrd/static/js/main.fc799a3d.js.map",
+    "main.c2926de9.css.map": "/nthusa_ghrd/static/css/main.c2926de9.css.map",
+    "main.73cac02d.js.map": "/nthusa_ghrd/static/js/main.73cac02d.js.map",
     "453.cae056c1.chunk.js.map": "/nthusa_ghrd/static/js/453.cae056c1.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.ce650e30.css",
-    "static/js/main.fc799a3d.js"
+    "static/css/main.c2926de9.css",
+    "static/js/main.73cac02d.js"
   ]
 }
