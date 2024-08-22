@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/human-rights-database/static/css/main.acd9ddf0.css",
-    "main.js": "/human-rights-database/static/js/main.2cd1b009.js",
+    "main.js": "/human-rights-database/static/js/main.1a3ac8e3.js",
     "static/js/453.c0499677.chunk.js": "/human-rights-database/static/js/453.c0499677.chunk.js",
     "index.html": "/human-rights-database/index.html",
     "main.acd9ddf0.css.map": "/human-rights-database/static/css/main.acd9ddf0.css.map",
-    "main.2cd1b009.js.map": "/human-rights-database/static/js/main.2cd1b009.js.map",
+    "main.1a3ac8e3.js.map": "/human-rights-database/static/js/main.1a3ac8e3.js.map",
     "453.c0499677.chunk.js.map": "/human-rights-database/static/js/453.c0499677.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.acd9ddf0.css",
-    "static/js/main.2cd1b009.js"
+    "static/js/main.1a3ac8e3.js"
   ]
 }
