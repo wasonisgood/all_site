@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>司法院媒體政策及業務宣導費比較</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>司法院媒體政策及業務宣導費比較</h1>
+        
+        <div class="tabs">
+            <button class="tab-button active" data-tab="overview">概覽</button>
+            <button class="tab-button" data-tab="details">詳細比較</button>
+            <button class="tab-button" data-tab="trend">趨勢分析</button>
+            <button class="tab-button" data-tab="stacked">堆疊預算</button>
+            <button class="tab-button" data-tab="itemTrends">項目趨勢</button>
+        </div>
+        
+        <div id="overview" class="tab-content active">
+            <div class="card">
+                <h2>年度總預算比較</h2>
+                <canvas id="yearlyBudgetChart"></canvas>
+            </div>
+        </div>
+        
+        <div id="details" class="tab-content">
+            <div id="budgetDetails" class="grid">
+                <!-- 動態生成的預算明細表格將在這裡顯示 -->
+            </div>
+        </div>
+        
+        <div id="trend" class="tab-content">
+            <div class="card">
+                <h2>預算趨勢分析</h2>
+                <canvas id="budgetTrendChart"></canvas>
+            </div>
+        </div>
+
+        <div id="stacked" class="tab-content">
+            <div class="card">
+                <h2>堆疊預算分析</h2>
+                <canvas id="stackedBudgetChart"></canvas>
+            </div>
+        </div>
+
+        <div id="itemTrends" class="tab-content">
+            <div class="card">
+                <h2>各項目預算趨勢</h2>
+                <div id="itemTrendsContainer"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

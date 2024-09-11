@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>司法院多年度預算分析儀表板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold mb-8 text-center text-blue-800">司法院多年度預算分析儀表板</h1>
+        
+        <div id="errorMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong class="font-bold">錯誤！</strong>
+            <span class="block sm:inline" id="errorText"></span>
+        </div>
+
+        <div class="mb-4">
+            <label for="yearSelect" class="block text-sm font-medium text-gray-700">選擇年度：</label>
+            <select id="yearSelect" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <option value="all">所有年度</option>
+                <!-- 年度選項將通過JavaScript動態填充 -->
+            </select>
+        </div>
+
+        <div id="dashboard">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-semibold mb-4">年度預算比較</h2>
+                    <canvas id="yearlyBudgetComparison"></canvas>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-semibold mb-4">媒體類型分佈</h2>
+                    <canvas id="mediaTypeDistribution"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <h2 class="text-2xl font-semibold mb-4">機關預算分配</h2>
+                <canvas id="organizationBudgetAllocation"></canvas>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <h2 class="text-2xl font-semibold mb-4">年度預算細項</h2>
+                <div class="overflow-x-auto">
+                    <table id="budgetTable" class="min-w-full table-auto">
+                        <thead>
+                            <tr class="bg-gray-200">
+                                <th class="px-4 py-2 cursor-pointer" data-sort="年度">年度 ▼</th>
+                                <th class="px-4 py-2 cursor-pointer" data-sort="季度">季度 ▼</th>
+                                <th class="px-4 py-2 cursor-pointer" data-sort="機關名稱">機關名稱 ▼</th>
+                                <th class="px-4 py-2 cursor-pointer" data-sort="宣導項目、標題及內容">宣導項目、標題及內容 ▼</th>
+                                <th class="px-4 py-2 cursor-pointer" data-sort="標案/契約名稱">標案/契約名稱 ▼</th>
+                                <th class="px-4 py-2 cursor-pointer" data-sort="媒體類型">媒體類型 ▼</th>
+                                <th class="px-4 py-2 cursor-pointer" data-sort="宣導期程">宣導期程 ▼</th>
+                                <th class="px-4 py-2 cursor-pointer" data-sort="執行單位">執行單位 ▼</th>
+                                <th class="px-4 py-2 cursor-pointer" data-sort="預算來源">預算來源 ▼</th>
+                                <th class="px-4 py-2 cursor-pointer" data-sort="預算科目">預算科目 ▼</th>
+                                <th class="px-4 py-2 cursor-pointer" data-sort="執行金額">執行金額 ▼</th>
+                                <th class="px-4 py-2 cursor-pointer" data-sort="受委託廠商名稱">受委託廠商名稱 ▼</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Table rows will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <h2 class="text-2xl font-semibold mb-4">宣導項目統計 (前10項)</h2>
+                <canvas id="promotionItemsChart"></canvas>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <h2 class="text-2xl font-semibold mb-4">受委託廠商統計 (跨年度前10名)</h2>
+                <canvas id="vendorStatisticsChart"></canvas>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <h2 class="text-2xl font-semibold mb-4">受委託廠商詳細資料</h2>
+                <div class="overflow-x-auto">
+                    <table id="vendorTable" class="min-w-full table-auto">
+                        <thead>
+                            <tr class="bg-gray-200">
+                                <th class="px-4 py-2 cursor-pointer" data-sort="廠商名稱">廠商名稱 ▼</th>
+                                <th class="px-4 py-2 cursor-pointer" data-sort="總受託金額">總受託金額 ▼</th>
+                                <th class="px-4 py-2 cursor-pointer" data-sort="受託件數">受託件數 ▼</th>
+                                <th class="px-4 py-2 cursor-pointer" data-sort="平均每件金額">平均每件金額 ▼</th>
+                                <th class="px-4 py-2 cursor-pointer" data-sort="最大單筆金額">最大單筆金額 ▼</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Table rows will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            let allData = {};
+        let currentYear = 'all';
+        let charts = {};
+
+        // 從多個 JSON 文件加載數據
+        Promise.all([
+            fetch('data.json').then(response => response.json()),
+            fetch('111_data.json').then(response => response.json()),
+        ])
+        .then(dataArray => {
+            allData = {
+                '2022': dataArray[0],
+                '2023': dataArray[1]
+                        };
+            initializeYearSelect();
+            processData();
+        })
+        .catch(error => {
+            console.error('Error loading JSON:', error);
+            showError('加載數據時發生錯誤：' + error.message);
+        });
+
+        function initializeYearSelect() {
+            const yearSelect = document.getElementById('yearSelect');
+            Object.keys(allData).forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year + '年';
+                yearSelect.appendChild(option);
+            });
+            yearSelect.addEventListener('change', (e) => {
+                currentYear = e.target.value;
+                processData();
+            });
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        function parseAmount(amount) {
+            if (typeof amount === 'number') return amount;
+            if (typeof amount === 'string') {
+                const cleaned = amount.replace(/[^\d.-]/g, '');
+                return cleaned ? parseFloat(cleaned) : 0;
+            }
+            return 0;
+        }
+
+        function getQuarter(dateString) {
+            if (!dateString) return '未知';
+            const match = dateString.match(/(\d+)年(\d+)月/);
+            if (match) {
+                const month = parseInt(match[2]);
+                return Math.ceil(month / 3);
+            }
+            return '未知';
+        }
+
+        function processData() {
+            try {
+                const filteredData = currentYear === 'all' 
+                    ? Object.values(allData).flat() 
+                    : allData[currentYear];
+
+                populateBudgetTable(filteredData);
+                createYearlyBudgetComparisonChart();
+                createMediaTypeDistributionChart(filteredData);
+                createOrganizationBudgetAllocationChart(filteredData);
+                createPromotionItemsChart(filteredData);
+                createVendorStatisticsChart();
+                populateVendorTable();
+            } catch (error) {
+                console.error('Error processing data:', error);
+                showError('處理數據時發生錯誤：' + error.message);
+            }
+        }
+
+        function populateBudgetTable(data) {
+            const tableBody = document.querySelector("#budgetTable tbody");
+            tableBody.innerHTML = '';
+            data.forEach(item => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = item.年度 || '未知';
+                row.insertCell(1).textContent = getQuarter(item.宣導期程);
+                row.insertCell(2).textContent = item.機關名稱 || '未知';
+                row.insertCell(3).textContent = item['宣導項目、標題及內容'] || '未知';
+                row.insertCell(4).textContent = item['標案/契約名稱'] || '未知';
+                row.insertCell(5).textContent = item.媒體類型 || '未知';
+                row.insertCell(6).textContent = item.宣導期程 || '未知';
+                row.insertCell(7).textContent = item.執行單位 || '未知';
+                row.insertCell(8).textContent = item.預算來源 || '未知';
+                row.insertCell(9).textContent = item.預算科目 || '未知';
+                row.insertCell(10).textContent = parseAmount(item.執行金額).toLocaleString();
+                row.insertCell(11).textContent = item.受委託廠商名稱 || '未知';
+            });
+            addTableSorting('budgetTable');
+        }
+
+        function addTableSorting(tableId) {
+            const table = document.getElementById(tableId);
+            const headers = table.querySelectorAll('th');
+            const tableBody = table.querySelector('tbody');
+            const rows = tableBody.querySelectorAll('tr');
+
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const column = header.dataset.sort;
+                    const isNumeric = column === '執行金額';
+                    const direction = header.classList.contains('sorted-asc') ? -1 : 1;
+
+                    const sortedRows = Array.from(rows).sort((a, b) => {
+                        const aColText = a.querySelector(`td:nth-child(${Array.from(headers).indexOf(header) + 1})`).textContent.trim();
+                        const bColText = b.querySelector(`td:nth-child(${Array.from(headers).indexOf(header) + 1})`).textContent.trim();
+
+                        if (isNumeric) {
+                            return direction * (parseFloat(aColText.replace(/[^\d.-]/g, '')) - parseFloat(bColText.replace(/[^\d.-]/g, '')));
+                        } else {
+                            return direction * aColText.localeCompare(bColText);
+                        }
+                    });
+
+                    sortedRows.forEach(sortedRow => tableBody.appendChild(sortedRow));
+
+                    headers.forEach(h => h.classList.remove('sorted-asc', 'sorted-desc'));
+                    header.classList.toggle('sorted-asc', direction === 1);
+                    header.classList.toggle('sorted-desc', direction === -1);
+                });
+            });
+        }
+
+        function createYearlyBudgetComparisonChart() {
+            const ctx = document.getElementById('yearlyBudgetComparison').getContext('2d');
+            const budgetByYear = Object.entries(allData).reduce((acc, [year, data]) => {
+                acc[year] = data.reduce((sum, item) => sum + parseAmount(item.執行金額), 0);
+                return acc;
+            }, {});
+
+            if (charts.yearlyBudget) charts.yearlyBudget.destroy();
+            charts.yearlyBudget = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(budgetByYear),
+                    datasets: [{
+                        label: '年度預算總額',
+                        data: Object.values(budgetByYear),
+                        backgroundColor: ['#4299E1', '#48BB78', '#F6AD55']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function createMediaTypeDistributionChart(data) {
+            const ctx = document.getElementById('mediaTypeDistribution').getContext('2d');
+            const mediaTypes = data.reduce((acc, item) => {
+                if (item.媒體類型) {
+                    acc[item.媒體類型] = (acc[item.媒體類型] || 0) + 1;
+                }
+                return acc;
+            }, {});
+
+            if (charts.mediaType) charts.mediaType.destroy();
+            charts.mediaType = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(mediaTypes),
+                    datasets: [{
+                        data: Object.values(mediaTypes),
+                        backgroundColor: ['#4299E1', '#48BB78', '#F6AD55', '#FC8181', '#9F7AEA', '#ED64A6']
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }
+
+        function createOrganizationBudgetAllocationChart(data) {
+            const ctx = document.getElementById('organizationBudgetAllocation').getContext('2d');
+            const budgetByOrg = data.reduce((acc, item) => {
+                if (item.機關名稱) {
+                    acc[item.機關名稱] = (acc[item.機關名稱] || 0) + parseAmount(item.執行金額);
+                }
+                return acc;
+            }, {});
+
+            if (charts.orgBudget) charts.orgBudget.destroy();
+            charts.orgBudget = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(budgetByOrg),
+                    datasets: [{
+                        data: Object.values(budgetByOrg),
+                        backgroundColor: ['#4299E1', '#48BB78', '#F6AD55', '#FC8181', '#9F7AEA', '#ED64A6']
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }
+
+        function createPromotionItemsChart(data) {
+            const ctx = document.getElementById('promotionItemsChart').getContext('2d');
+            const promotionItems = data.reduce((acc, item) => {
+                if (item['宣導項目、標題及內容']) {
+                    const shortTitle = item['宣導項目、標題及內容'].split('、')[0].substring(0, 20) + '...';
+                    acc[shortTitle] = (acc[shortTitle] || 0) + parseAmount(item.執行金額);
+                }
+                return acc;
+            }, {});
+
+            const sortedItems = Object.entries(promotionItems)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            if (charts.promotionItems) charts.promotionItems.destroy();
+            charts.promotionItems = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sortedItems.map(item => item[0]),
+                    datasets: [{
+                        label: '執行金額',
+                        data: sortedItems.map(item => item[1]),
+                        backgroundColor: '#48BB78'
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function createVendorStatisticsChart() {
+            const ctx = document.getElementById('vendorStatisticsChart').getContext('2d');
+            const vendorStats = calculateVendorStatistics();
+
+            const topVendors = Object.entries(vendorStats)
+                .sort((a, b) => b[1].totalAmount - a[1].totalAmount)
+                .slice(0, 10);
+
+            if (charts.vendorStats) charts.vendorStats.destroy();
+            charts.vendorStats = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: topVendors.map(v => v[0]),
+                    datasets: [
+                        {
+                            label: '總受託金額',
+                            data: topVendors.map(v => v[1].totalAmount),
+                            backgroundColor: '#4299E1',
+                            yAxisID: 'y-axis-1'
+                        },
+                        {
+                            label: '受託件數',
+                            data: topVendors.map(v => v[1].count),
+                            backgroundColor: '#48BB78',
+                            yAxisID: 'y-axis-2'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        'y-axis-1': {
+                            type: 'linear',
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: '總受託金額'
+                            }
+                        },
+                        'y-axis-2': {
+                            type: 'linear',
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: '受託件數'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function populateVendorTable() {
+            const tableBody = document.querySelector("#vendorTable tbody");
+            tableBody.innerHTML = '';
+            const vendorStats = calculateVendorStatistics();
+
+            Object.entries(vendorStats)
+                .sort((a, b) => b[1].totalAmount - a[1].totalAmount)
+                .forEach(([vendor, stats]) => {
+                    const row = tableBody.insertRow();
+                    row.insertCell(0).textContent = vendor;
+                    row.insertCell(1).textContent = stats.totalAmount.toLocaleString();
+                    row.insertCell(2).textContent = stats.count;
+                    row.insertCell(3).textContent = (stats.totalAmount / stats.count).toFixed(2);
+                    row.insertCell(4).textContent = stats.maxAmount.toLocaleString();
+                });
+            addTableSorting('vendorTable');
+        }
+
+        function calculateVendorStatistics() {
+            const vendorStats = {};
+            Object.values(allData).flat().forEach(item => {
+                const vendor = item.受委託廠商名稱 || '未知';
+                const amount = parseAmount(item.執行金額);
+                if (!vendorStats[vendor]) {
+                    vendorStats[vendor] = { totalAmount: 0, count: 0, maxAmount: 0 };
+                }
+                vendorStats[vendor].totalAmount += amount;
+                vendorStats[vendor].count++;
+                vendorStats[vendor].maxAmount = Math.max(vendorStats[vendor].maxAmount, amount);
+            });
+            return vendorStats;
+        }
+
+        function addTableSorting(tableId) {
+            const table = document.getElementById(tableId);
+            const headers = table.querySelectorAll('th');
+            const tableBody = table.querySelector('tbody');
+            const rows = tableBody.querySelectorAll('tr');
+
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const column = header.dataset.sort;
+                    const isNumeric = ['總受託金額', '受託件數', '平均每件金額', '最大單筆金額'].includes(column);
+                    const direction = header.classList.contains('sorted-asc') ? -1 : 1;
+
+                    const sortedRows = Array.from(rows).sort((a, b) => {
+                        const aColText = a.querySelector(`td:nth-child(${Array.from(headers).indexOf(header) + 1})`).textContent.trim();
+                        const bColText = b.querySelector(`td:nth-child(${Array.from(headers).indexOf(header) + 1})`).textContent.trim();
+
+                        if (isNumeric) {
+                            return direction * (parseFloat(aColText.replace(/[^\d.-]/g, '')) - parseFloat(bColText.replace(/[^\d.-]/g, '')));
+                        } else {
+                            return direction * aColText.localeCompare(bColText);
+                        }
+                    });
+
+                    sortedRows.forEach(sortedRow => tableBody.appendChild(sortedRow));
+
+                    headers.forEach(h => h.classList.remove('sorted-asc', 'sorted-desc'));
+                    header.classList.toggle('sorted-asc', direction === 1);
+                    header.classList.toggle('sorted-desc', direction === -1);
+                });
+            });
+        }
+
+</script>
+</body>
+</html>
