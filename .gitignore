@@ -31,5 +31,4 @@ node_modules/
 # 忽略所有的 CSV 文件
 *.csv
 
-# 忽略 JSON 文件 (可根據需求修改)
-*.json
+
