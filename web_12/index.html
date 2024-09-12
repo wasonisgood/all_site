@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>衛福部媒體預算監督系統</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <header class="gradient-bg text-white p-6 shadow-lg">
+        <h1 class="text-3xl font-bold">衛福部媒體預算監督系統</h1>
+    </header>
+
+    <main class="container mx-auto mt-8 p-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <section class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold mb-4">媒體類型分佈</h2>
+                <canvas id="mediaTypeChart"></canvas>
+            </section>
+            
+            <section class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold mb-4">年度預算趨勢</h2>
+                <canvas id="budgetTrendChart"></canvas>
+            </section>
+        </div>
+
+        <section class="mt-8 bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-semibold mb-4">廠商分析</h2>
+            <canvas id="vendorChart"></canvas>
+        </section>
+
+        <section class="mt-8 bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-semibold mb-4">搜索與過濾</h2>
+            <input type="text" id="search" placeholder="搜索關鍵字" class="w-full p-2 border rounded">
+            <div id="searchResults" class="mt-4"></div>
+        </section>
+
+        <section class="mt-8 bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-semibold mb-4">詳細數據</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full table-auto">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="p-2">年度</th>
+                            <th class="p-2">機關名稱</th>
+                            <th class="p-2">宣導項目</th>
+                            <th class="p-2">媒體類型</th>
+                            <th class="p-2">執行金額</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <button id="exportButton" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            導出數據
+        </button>
+    </main>
+    <div id="detailModal" class="modal">
+        <div class="modal-content rounded-lg">
+            <span class="close float-right text-2xl font-bold cursor-pointer">&times;</span>
+            <h2 class="text-xl font-semibold mb-4">詳細資訊</h2>
+            <pre id="detailContent" class="bg-gray-100 p-4 rounded overflow-x-auto"></pre>
+        </div>
+    </div>
+    <script>
+    let allData = [];
+
+    // 加载所有JSON文件
+    async function loadAllData() {
+        const years = ['108', '109', '110', '111', '112', '113'];
+        for (const year of years) {
+            try {
+                const response = await fetch(`data/${year}年_媒體政策及業務宣導執行情形.json`);
+                const yearData = await response.json();
+                allData = allData.concat(yearData.data.map(item => ({...item, year})));
+            } catch (error) {
+                console.error(`Error loading data for year ${year}:`, error);
+            }
+        }
+        initializeCharts();
+        populateTable();
+    }
+
+    function initializeCharts() {
+        createMediaTypeChart();
+        createBudgetTrendChart();
+        createVendorChart();
+    }
+
+    function createMediaTypeChart() {
+        const mediaTypeCounts = {};
+        allData.forEach(item => {
+            const mediaType = item['媒體類型'];
+            mediaTypeCounts[mediaType] = (mediaTypeCounts[mediaType] || 0) + 1;
+        });
+
+        const ctx = document.getElementById('mediaTypeChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: Object.keys(mediaTypeCounts),
+                datasets: [{
+                    data: Object.values(mediaTypeCounts),
+                    backgroundColor: [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                    ]
+                }]
+            }
+        });
+    }
+
+    function createBudgetTrendChart() {
+        const yearlyBudget = {};
+        allData.forEach(item => {
+            const year = item.year;
+            const amount = parseFloat(item['執行金額']) || 0;
+            yearlyBudget[year] = (yearlyBudget[year] || 0) + amount;
+        });
+
+        const ctx = document.getElementById('budgetTrendChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Object.keys(yearlyBudget),
+                datasets: [{
+                    label: '年度預算',
+                    data: Object.values(yearlyBudget),
+                    borderColor: '#36A2EB',
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    function createVendorChart() {
+        const vendorData = {};
+        allData.forEach(item => {
+            const vendor = item['受委託廠商名稱'];
+            if (vendor) {
+                vendorData[vendor] = (vendorData[vendor] || 0) + 1;
+            }
+        });
+
+        const sortedVendors = Object.entries(vendorData)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10);
+
+        const ctx = document.getElementById('vendorChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: sortedVendors.map(v => v[0]),
+                datasets: [{
+                    label: '專案數量',
+                    data: sortedVendors.map(v => v[1]),
+                    backgroundColor: '#4BC0C0'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+    function getValueFromMultipleKeys(item, keys) {
+    for (let key of keys) {
+        if (item[key] !== undefined && item[key] !== null && item[key] !== '') {
+            return item[key];
+        }
+    }
+    return 'N/A';
+}
+function getValueFromMultipleMoms(item, keys) {
+    function extractAndCleanNumber(value) {
+        if (value === "0" || value === 0) {
+            return "0";
+        }
+        const match = String(value).match(/([\d,]+)/);
+        if (match) {
+            const numberPart = match[0];
+            if (numberPart.replace(/,/g, '').length >= 4 && numberPart.includes(',')) {
+                return numberPart.replace(/,/g, '').trim();
+            }
+        }
+        return null;
+    }
+
+    function isValidNumber(value) {
+        return extractAndCleanNumber(value) !== null || value === "0" || value === 0;
+    }
+
+    function checkKeywordsAndValue(obj) {
+        const keywords = ['免費加值', '加值回饋', '免費', '回饋項目'];
+        for (const [key, value] of Object.entries(obj)) {
+            const stringValue = String(value).toLowerCase();
+            const stringKey = String(key).toLowerCase();
+            for (const keyword of keywords) {
+                if (stringKey.includes(keyword) || stringValue.includes(keyword)) {
+                    if (value === "0" || value === 0) {
+                        return '[免費加值]';
+                    } else {
+                        return `[${value}]`; // 返回键值而不是键名
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    // 首先检查整个 item 是否包含关键词
+    const keywordResult = checkKeywordsAndValue(item);
+    if (keywordResult) {
+        return keywordResult;
+    }
+
+    // 如果没有找到关键词匹配，则继续处理指定的键
+    for (let key of keys) {
+        let value = item[key];
+        if (value !== undefined && value !== null && value !== '') {
+            if (isValidNumber(value)) {
+                if (value === "0" || value === 0) {
+                    return "0";
+                }
+                const cleanNumber = extractAndCleanNumber(value);
+                const originalString = String(value);
+                return originalString.replace(/([\d,]+)/, cleanNumber);
+            }
+        }
+    }
+    return 'N/A';
+}
+    function populateTable() {
+        const tableBody = document.getElementById('dataTable');
+        tableBody.innerHTML = allData.map((item, index) => `
+        <tr class="cursor-pointer hover:bg-gray-100" onclick="showDetails(${index})">
+            <td class="border p-2">${item.year || 'N/A'}</td>
+            <td class="border p-2">${getValueFromMultipleKeys(item, ['機關名稱'])}</td>
+            <td class="border p-2">${getValueFromMultipleKeys(item, ['宣導項目、標題及內容', '宣導內容'])}</td>
+            <td class="border p-2">${getValueFromMultipleKeys(item, ['媒體類型'])}</td>
+            <td class="border p-2">${getValueFromMultipleMoms(item, ['執行金額', '總金額', '0總金額','預期效益','經費來源','託播對象'])}</td>
+            </tr>
+        `).join('');
+    }
+
+    function showDetails(index) {
+        const item = allData[index];
+        const detailContent = document.getElementById('detailContent');
+        detailContent.textContent = JSON.stringify(item, null, 2);
+        document.getElementById('detailModal').style.display = 'block';
+    }
+
+    // 关闭模态框
+    document.querySelector('.close').onclick = function() {
+        document.getElementById('detailModal').style.display = 'none';
+    }
+
+    // 点击模态框外部关闭
+    window.onclick = function(event) {
+        const modal = document.getElementById('detailModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    document.getElementById('search').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const results = allData.filter(item => 
+            Object.values(item).some(value => 
+                String(value).toLowerCase().includes(searchTerm)
+            )
+        );
+        displaySearchResults(results);
+    });
+
+    function displaySearchResults(results) {
+        const resultsDiv = document.getElementById('searchResults');
+        resultsDiv.innerHTML = results.map(item => `
+            <div class="mb-2 p-2 border rounded">
+                <strong>${item.year} - ${item['機關名稱']}</strong>: ${item['宣導項目、標題及內容']}
+            </div>
+        `).join('');
+    }
+
+    document.getElementById('exportButton').addEventListener('click', function() {
+        const csv = Papa.unparse(allData);
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "衛福部媒體預算數據.csv");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    });
+
+    loadAllData();
+    </script>
+</body>
+</html>

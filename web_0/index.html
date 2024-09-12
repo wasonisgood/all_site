@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多年度媒體預算執行分析系統</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .summary-box {
+            background-color: #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        #loadingMessage {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>多年度媒體預算執行分析系統</h1>
+    
+    <div id="loadingMessage">正在載入數據，請稍候...</div>
+
+    <select id="yearSelect" style="display:none;">
+        <option value="all">所有年度</option>
+    </select>
+
+    <div class="summary-box" id="summaryBox"></div>
+
+    <div class="container">
+        <div class="chart-container">
+            <h2>媒體類型分布</h2>
+            <canvas id="mediaTypeChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h2>執行金額分布</h2>
+            <canvas id="budgetChart"></canvas>
+        </div>
+    </div>
+
+    <h2>詳細資料</h2>
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>年度</th>
+                <th>項次</th>
+                <th>機關名稱</th>
+                <th>宣導項目標題及內容</th>
+                <th>媒體類型</th>
+                <th>執行金額</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        let allData = [];
+        let mediaTypeChart, budgetChart;
+
+        // 模擬從 data 資料夾讀取多個 JSON 文件
+        async function loadAllData() {
+            const years = ['108', '109', '110', '111', '112', '113']; // 假設這些是可用的年度
+            for (const year of years) {
+                try {
+                    const response = await fetch(`data/${year}年度媒體政策及業務宣導執行情形.json`);
+                    const data = await response.json();
+                    allData = allData.concat(data.map(item => ({...item, 年度: year})));
+                } catch (error) {
+                    console.error(`Error loading data for year ${year}:`, error);
+                }
+            }
+            initializeYearSelect();
+            updateCharts();
+            updateTable();
+            updateSummary();
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('yearSelect').style.display = 'block';
+        }
+
+        function initializeYearSelect() {
+            const yearSelect = document.getElementById('yearSelect');
+            const years = [...new Set(allData.map(item => item.年度))];
+            years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = `${year}年度`;
+                yearSelect.appendChild(option);
+            });
+            yearSelect.addEventListener('change', () => {
+                updateCharts();
+                updateTable();
+                updateSummary();
+            });
+        }
+
+        function updateCharts() {
+            const selectedYear = document.getElementById('yearSelect').value;
+            const filteredData = selectedYear === 'all' ? allData : allData.filter(item => item.年度 === selectedYear);
+
+            updateMediaTypeChart(filteredData);
+            updateBudgetChart(filteredData);
+        }
+
+        function updateMediaTypeChart(data) {
+            const mediaTypeCounts = data.reduce((acc, cur) => {
+                acc[cur.媒體類型] = (acc[cur.媒體類型] || 0) + 1;
+                return acc;
+            }, {});
+
+            const ctx = document.getElementById('mediaTypeChart').getContext('2d');
+            
+            if (mediaTypeChart) {
+                mediaTypeChart.destroy();
+            }
+
+            mediaTypeChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(mediaTypeCounts),
+                    datasets: [{
+                        data: Object.values(mediaTypeCounts),
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: '媒體類型分布'
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateBudgetChart(data) {
+            const aggregatedData = data.reduce((acc, cur) => {
+                const existingItem = acc.find(item => item.機關名稱 === cur.機關名稱);
+                if (existingItem) {
+                    existingItem.執行金額 += parseFloat(cur.執行金額) || 0;
+                } else {
+                    acc.push({
+                        機關名稱: cur.機關名稱,
+                        執行金額: parseFloat(cur.執行金額) || 0
+                    });
+                }
+                return acc;
+            }, []);
+
+            const ctx = document.getElementById('budgetChart').getContext('2d');
+            
+            if (budgetChart) {
+                budgetChart.destroy();
+            }
+
+            budgetChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: aggregatedData.map(item => item.機關名稱),
+                    datasets: [{
+                        label: '執行金額',
+                        data: aggregatedData.map(item => item.執行金額),
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: '各機關執行金額'
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTable() {
+            const selectedYear = document.getElementById('yearSelect').value;
+            const filteredData = selectedYear === 'all' ? allData : allData.filter(item => item.年度 === selectedYear);
+
+            const tableBody = document.querySelector('#dataTable tbody');
+            tableBody.innerHTML = '';
+
+            filteredData.forEach(item => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = item.年度;
+                row.insertCell(1).textContent = item.項次;
+                row.insertCell(2).textContent = item.機關名稱;
+                row.insertCell(3).textContent = item.宣導項目標題及內容;
+                row.insertCell(4).textContent = item.媒體類型;
+                row.insertCell(5).textContent = item.執行金額;
+            });
+        }
+
+        function updateSummary() {
+            const selectedYear = document.getElementById('yearSelect').value;
+            const filteredData = selectedYear === 'all' ? allData : allData.filter(item => item.年度 === selectedYear);
+
+            const totalBudget = filteredData.reduce((sum, item) => sum + (parseFloat(item.執行金額) || 0), 0);
+            const averageBudget = totalBudget / filteredData.length;
+            const mediaTypes = [...new Set(filteredData.map(item => item.媒體類型))];
+
+            const summaryBox = document.getElementById('summaryBox');
+            summaryBox.innerHTML = `
+                <h3>統計摘要 ${selectedYear === 'all' ? '（所有年度）' : `（${selectedYear}年度）`}</h3>
+                <p>總執行金額: ${totalBudget.toFixed(2)}</p>
+                <p>平均執行金額: ${averageBudget.toFixed(2)}</p>
+                <p>項目數量: ${filteredData.length}</p>
+                <p>媒體類型數量: ${mediaTypes.length}</p>
+            `;
+        }
+
+        // 啟動數據載入過程
+        loadAllData();
+    </script>
+</body>
+</html>
