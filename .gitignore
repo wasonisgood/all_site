@@ -16,7 +16,7 @@ __pycache__/
 # 忽略 IDE/編輯器配置文件
 .vscode/
 .idea/
-justice-app/
+.justice-app
 *.suo
 *.ntvs*
 *.njsproj
